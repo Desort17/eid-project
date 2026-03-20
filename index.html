@@ -2,45 +2,76 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Eid Mubarak 3D Celebration</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<title>Eid Mubarak Celebration</title>
 
 <style>
 
 body{
-margin:0;
-overflow:hidden;
-background:black;
-font-family:Arial;
-color:white;
-text-align:center;
+    margin:0;
+    font-family:Arial, sans-serif;
+    text-align:center;
+    background:linear-gradient(#0f2027,#203a43,#2c5364);
+    color:white;
+    overflow:hidden;
 }
 
 h1{
-position:absolute;
-top:20px;
-width:100%;
-font-size:48px;
-z-index:2;
+    margin-top:80px;
+    font-size:55px;
+}
+
+h2{
+    font-weight:normal;
 }
 
 button{
-position:absolute;
-top:90px;
-left:50%;
-transform:translateX(-50%);
-padding:12px 30px;
-font-size:18px;
-border:none;
-border-radius:20px;
-background:gold;
-cursor:pointer;
-z-index:2;
+    padding:15px 35px;
+    font-size:20px;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    background:#ffd700;
+    color:black;
+    margin-top:30px;
 }
 
-canvas{
-display:block;
+button:hover{
+    background:#ffea55;
+}
+
+.moon{
+    position:absolute;
+    top:50px;
+    right:100px;
+    width:120px;
+    height:120px;
+    background:#fff8dc;
+    border-radius:50%;
+    box-shadow:0 0 40px #fff;
+}
+
+.star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:white;
+    animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+    from{opacity:0.2;}
+    to{opacity:1;}
+}
+
+.card{
+    margin-top:40px;
+    font-size:24px;
+}
+
+input{
+    padding:10px;
+    border-radius:10px;
+    border:none;
 }
 
 </style>
@@ -48,9 +79,20 @@ display:block;
 
 <body>
 
+<div class="moon"></div>
+
 <h1>🌙 Eid Mubarak 🌙</h1>
+<h2>Celebrate Eid with Joy</h2>
 
 <button onclick="playSong()">Play Eid Song</button>
+
+<br><br>
+
+<input id="nameInput" placeholder="Enter your name">
+
+<button onclick="generateGreeting()">Generate Greeting</button>
+
+<div class="card" id="greeting"></div>
 
 <audio id="eidSong">
 <source src="Eid_song.mp3" type="audio/mpeg">
@@ -58,120 +100,38 @@ display:block;
 
 <script>
 
-// play music
-
 function playSong(){
-document.getElementById("eidSong").play();
+    document.getElementById("eidSong").play();
 }
 
-// scene
+function generateGreeting(){
 
-const scene = new THREE.Scene();
+let name=document.getElementById("nameInput").value;
 
-const camera = new THREE.PerspectiveCamera(
-75,
-window.innerWidth/window.innerHeight,
-0.1,
-1000
-);
+if(name===""){
+name="Friend";
+}
 
-camera.position.z = 5;
+let message="Eid Mubarak "+name+"! 🌙✨ May your heart be filled with peace, joy and blessings.";
 
-const renderer = new THREE.WebGLRenderer();
-
-renderer.setSize(window.innerWidth,window.innerHeight);
-
-document.body.appendChild(renderer.domElement);
-
-// moon
-
-const moonGeometry = new THREE.SphereGeometry(2,32,32);
-
-const moonMaterial = new THREE.MeshBasicMaterial({
-color:0xffffcc
-});
-
-const moon = new THREE.Mesh(moonGeometry,moonMaterial);
-
-scene.add(moon);
-
-moon.position.set(0,0,-5);
-
-// stars
-
-const starGeometry = new THREE.SphereGeometry(0.05,16,16);
-
-const starMaterial = new THREE.MeshBasicMaterial({color:0xffffff});
-
-for(let i=0;i<200;i++){
-
-const star = new THREE.Mesh(starGeometry,starMaterial);
-
-star.position.x = (Math.random()-0.5)*100;
-star.position.y = (Math.random()-0.5)*100;
-star.position.z = -Math.random()*100;
-
-scene.add(star);
+document.getElementById("greeting").innerHTML=message;
 
 }
 
-// fireworks particles
+// create stars
 
-let particles=[];
+for(let i=0;i<80;i++){
 
-function createFirework(){
+let star=document.createElement("div");
 
-const particleGeometry = new THREE.SphereGeometry(0.08,8,8);
+star.className="star";
 
-const particleMaterial = new THREE.MeshBasicMaterial({
-color:Math.random()*0xffffff
-});
+star.style.top=Math.random()*100+"vh";
+star.style.left=Math.random()*100+"vw";
 
-const particle = new THREE.Mesh(particleGeometry,particleMaterial);
-
-particle.position.set(
-(Math.random()-0.5)*10,
-(Math.random()-0.5)*5,
--5
-);
-
-scene.add(particle);
-
-particles.push(particle);
+document.body.appendChild(star);
 
 }
-
-setInterval(createFirework,300);
-
-// animation loop
-
-function animate(){
-
-requestAnimationFrame(animate);
-
-moon.rotation.y += 0.003;
-
-particles.forEach(p=>{
-p.position.y += 0.05;
-});
-
-renderer.render(scene,camera);
-
-}
-
-animate();
-
-// responsive resize
-
-window.addEventListener("resize",()=>{
-
-camera.aspect = window.innerWidth/window.innerHeight;
-
-camera.updateProjectionMatrix();
-
-renderer.setSize(window.innerWidth,window.innerHeight);
-
-});
 
 </script>
 
